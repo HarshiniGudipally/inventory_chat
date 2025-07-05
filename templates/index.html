@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Inventory - SLN AUTOMOBILES{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">SLN AUTOMOBILES INVENTORY</h1>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <a href="/add" class="btn btn-primary">➕ Add New Part</a>
+                <a href="/export" class="btn btn-outline-secondary ms-2">Export CSV</a>
+            </div>
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search parts...">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Part #</th>
+                        <th>Name</th>
+                        <th>Brand</th>
+                        <th>Compatibility</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Supplier</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="partsTable">
+                    {% for part in parts %}
+                    <tr>
+                        <td><strong>{{ part.part_number }}</strong></td>
+                        <td>{{ part.part_name }}</td>
+                        <td>{{ part.brand }}</td>
+                        <td>{{ part.vehicle_compatibility }}</td>
+                        <td><span class="badge bg-secondary">{{ part.category }}</span></td>
+                        <td>
+                            {% if part.quantity_in_stock < part.minimum_stock_level %}
+                                <span class="badge bg-danger">{{ part.quantity_in_stock }}</span>
+                            {% elif part.quantity_in_stock < (part.minimum_stock_level + 10) %}
+                                <span class="badge bg-warning">{{ part.quantity_in_stock }}</span>
+                            {% else %}
+                                <span class="badge bg-success">{{ part.quantity_in_stock }}</span>
+                            {% endif %}
+                        </td>
+                        <td>${{ '%.2f'|format(part.unit_price) }}</td>
+                        <td>{{ part.supplier }}</td>
+                        <td>
+                            <a href="/edit/{{ part._id }}" class="btn btn-sm btn-outline-info">Edit</a>
+                            <a href="/delete/{{ part._id }}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - SLN AUTOMOBILES{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Dashboard</h1>
+        
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Parts</h5>
+                        <h2 class="card-text">{{ total_parts }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Low Stock Items</h5>
+                        <h2 class="card-text">{{ low_stock_parts }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Value</h5>
+                        <h2 class="card-text">${{ "%.2f"|format(total_value) }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Categories</h5>
+                        <h2 class="card-text">{{ categories|length }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Category Distribution -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Category Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for category in categories %}
+                                    <tr>
+                                        <td>{{ category._id }}</td>
+                                        <td>{{ category.count }}</td>
+                                        <td>{{ "%.1f"|format((category.count / total_parts) * 100) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Low Stock Alerts -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Low Stock Alerts</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if low_stock_items %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Part</th>
+                                        <th>Current Stock</th>
+                                        <th>Min Level</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in low_stock_items %}
+                                    <tr>
+                                        <td>{{ item.part_name }}</td>
+                                        <td><span class="badge bg-danger">{{ item.quantity_in_stock }}</span></td>
+                                        <td>{{ item.minimum_stock_level }}</td>
+                                        <td>
+                                            <a href="/edit/{{ item._id }}" class="btn btn-sm btn-outline-warning">Restock</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-success">All items are above minimum stock levels!</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="/add" class="btn btn-primary">Add New Part</a>
+                            <a href="/export" class="btn btn-outline-secondary">Export Inventory</a>
+                            <a href="/chat" class="btn btn-outline-info">Ask AI Assistant</a>
+                            <a href="/" class="btn btn-outline-dark">View All Inventory</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

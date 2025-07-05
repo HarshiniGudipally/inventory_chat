@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Edit Part - SLN AUTOMOBILES{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="mb-4">Edit Auto Part</h1>
+        <form method="POST" class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="part_number" class="form-label">Part Number *</label>
+                        <input type="text" class="form-control" id="part_number" name="part_number" value="{{ part.part_number }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="part_name" class="form-label">Part Name *</label>
+                        <input type="text" class="form-control" id="part_name" name="part_name" value="{{ part.part_name }}" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="brand" class="form-label">Brand *</label>
+                        <input type="text" class="form-control" id="brand" name="brand" value="{{ part.brand }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="category" class="form-label">Category *</label>
+                        <select class="form-select" id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Engine" {% if part.category == "Engine" %}selected{% endif %}>Engine</option>
+                            <option value="Brakes" {% if part.category == "Brakes" %}selected{% endif %}>Brakes</option>
+                            <option value="Electrical" {% if part.category == "Electrical" %}selected{% endif %}>Electrical</option>
+                            <option value="Filters" {% if part.category == "Filters" %}selected{% endif %}>Filters</option>
+                            <option value="Suspension" {% if part.category == "Suspension" %}selected{% endif %}>Suspension</option>
+                            <option value="Transmission" {% if part.category == "Transmission" %}selected{% endif %}>Transmission</option>
+                            <option value="Exhaust" {% if part.category == "Exhaust" %}selected{% endif %}>Exhaust</option>
+                            <option value="Body" {% if part.category == "Body" %}selected{% endif %}>Body</option>
+                            <option value="Other" {% if part.category == "Other" %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="vehicle_compatibility" class="form-label">Vehicle Compatibility *</label>
+                    <input type="text" class="form-control" id="vehicle_compatibility" name="vehicle_compatibility" 
+                           value="{{ part.vehicle_compatibility }}" placeholder="e.g., Honda Civic 2018-2023" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="quantity_in_stock" class="form-label">Quantity in Stock *</label>
+                        <input type="number" class="form-control" id="quantity_in_stock" name="quantity_in_stock" 
+                               value="{{ part.quantity_in_stock }}" min="0" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="minimum_stock_level" class="form-label">Minimum Stock Level *</label>
+                        <input type="number" class="form-control" id="minimum_stock_level" name="minimum_stock_level" 
+                               value="{{ part.minimum_stock_level }}" min="0" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="unit_price" class="form-label">Unit Price ($) *</label>
+                        <input type="number" class="form-control" id="unit_price" name="unit_price" 
+                               value="{{ part.unit_price }}" min="0" step="0.01" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="supplier" class="form-label">Supplier *</label>
+                        <input type="text" class="form-control" id="supplier" name="supplier" value="{{ part.supplier }}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="location_in_shop" class="form-label">Location in Shop</label>
+                        <input type="text" class="form-control" id="location_in_shop" name="location_in_shop" 
+                               value="{{ part.location_in_shop or '' }}" placeholder="e.g., Shelf A1, Rack 3">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="condition" class="form-label">Condition</label>
+                        <select class="form-select" id="condition" name="condition">
+                            <option value="New" {% if part.condition == "New" %}selected{% endif %}>New</option>
+                            <option value="Refurbished" {% if part.condition == "Refurbished" %}selected{% endif %}>Refurbished</option>
+                            <option value="Used" {% if part.condition == "Used" %}selected{% endif %}>Used</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="warranty_period" class="form-label">Warranty Period (months)</label>
+                        <input type="number" class="form-control" id="warranty_period" name="warranty_period" 
+                               value="{{ part.warranty_period or '' }}" min="0">
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Update Part</button>
+                    <a href="/" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

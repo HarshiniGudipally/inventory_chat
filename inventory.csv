@@ -1,0 +1,3 @@
+_id,part_number,part_name,brand,vehicle_compatibility,category,quantity_in_stock,minimum_stock_level,unit_price,supplier,location_in_shop,condition,warranty_period,created_at
+6868a305938478d3ebabe52b,BOS-001,Oil Filter,Bosch,Honda Civic 2018-2023,Filters,25,10,12.5,AutoZone,Shelf A1,New,12,2025-07-04 23:59:01.013
+6868a305938478d3ebabe52c,NGK-002,Spark Plug,NGK,Toyota Camry 2019-2022,Engine,50,20,8.75,NAPA,Rack B2,New,6,2025-07-04 23:59:01.013
