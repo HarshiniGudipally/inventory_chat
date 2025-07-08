@@ -77,6 +77,132 @@ body {
     font-style: italic;
 }
 
+/* Image hover preview styles */
+.image-preview {
+    position: fixed;
+    z-index: 99999;
+    background: white;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 8px;
+    max-width: 280px;
+    max-height: 320px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.image-preview.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    max-width: 250px;
+    max-height: 250px;
+    object-fit: contain;
+}
+
+.image-preview .preview-info {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 11px;
+    color: #333;
+    font-weight: 500;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.hover-preview {
+    transition: transform 0.2s ease-in-out;
+}
+
+.hover-preview:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    position: relative;
+}
+
+/* Suggestions dropdown styles */
+.suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    margin-top: 2px;
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-content {
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.suggestion-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.suggestion-price-input {
+    width: 100px;
+    font-size: 0.8em;
+}
+
+.suggestion-actions .btn {
+    font-size: 0.8em;
+    padding: 2px 8px;
+}
+
+.suggestion-part-number {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.suggestion-part-name {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.suggestion-brand {
+    font-size: 0.8em;
+    color: #999;
+}
+
+.suggestion-price {
+    font-weight: bold;
+    color: #28a745;
+}
+
 @media (max-width: 768px) {
     .table-responsive {
         font-size: 0.9rem;
@@ -90,5 +216,14 @@ body {
     .chat-messages {
         min-height: 250px;
         max-height: 300px;
+    }
+    
+    .image-preview {
+        max-width: 200px;
+        max-height: 200px;
+    }
+    
+    .suggestions-dropdown {
+        max-height: 200px;
     }
 } 

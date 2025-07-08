@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}Customers - SLN AUTOMOBILES{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Customer Management</h1>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                Add Customer
+            </button>
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Customers</h5>
+                        <h2 class="card-text">{{ customers|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Customers</h5>
+                        <h2 class="card-text">{{ customers|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">This Month</h5>
+                        <h2 class="card-text" id="monthCustomers">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Top Customer</h5>
+                        <h2 class="card-text" id="topCustomer">-</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search and Filter -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Search Customers</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <input type="text" id="customerSearch" class="form-control" placeholder="Search by name, email, or phone...">
+                    </div>
+                    <div class="col-md-4">
+                        <select id="customerFilter" class="form-select">
+                            <option value="">All Customers</option>
+                            <option value="recent">Recently Added</option>
+                            <option value="active">Active Customers</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Customers Table -->
+        {% if customers %}
+        <div class="card">
+            <div class="card-header">
+                <h5>Customer Records</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Joined Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTable">
+                            {% for customer in customers %}
+                            <tr>
+                                <td><strong>{{ customer.customer_id }}</strong></td>
+                                <td>{{ customer.name }}</td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.phone }}</td>
+                                <td>
+                                    <small class="text-muted">{{ customer.address[:50] }}{% if customer.address|length > 50 %}...{% endif %}</small>
+                                </td>
+                                <td>{{ customer.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info" onclick="viewCustomer('{{ customer.customer_id }}')">
+                                        View
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="editCustomer('{{ customer.customer_id }}')">
+                                        Edit
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <h3 class="text-muted">No customers found</h3>
+            <p class="text-muted">Add your first customer to start building your customer database.</p>
+            <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                Add Customer
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="/customers/add" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address *</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div class="modal fade" id="customerDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="customerDetailsContent">
+                <!-- Customer details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('customerSearch');
+    const filterSelect = document.getElementById('customerFilter');
+    const customersTable = document.getElementById('customersTable');
+    
+    if (searchInput && customersTable) {
+        searchInput.addEventListener('input', function() {
+            filterCustomers();
+        });
+    }
+    
+    if (filterSelect && customersTable) {
+        filterSelect.addEventListener('change', function() {
+            filterCustomers();
+        });
+    }
+});
+
+function filterCustomers() {
+    const searchTerm = document.getElementById('customerSearch').value.toLowerCase();
+    const filterValue = document.getElementById('customerFilter').value;
+    const rows = document.querySelectorAll('#customersTable tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const shouldShow = text.includes(searchTerm);
+        row.style.display = shouldShow ? '' : 'none';
+    });
+}
+
+function viewCustomer(customerId) {
+    // For now, just show a simple alert
+    // In a real application, you would fetch customer details from the server
+    alert(`Viewing customer: ${customerId}\n\nThis would show detailed customer information including:\n- Purchase history\n- Total spent\n- Last visit\n- Preferences`);
+}
+
+function editCustomer(customerId) {
+    // For now, just show a simple alert
+    // In a real application, you would open an edit modal
+    alert(`Editing customer: ${customerId}\n\nThis would open an edit form for the customer.`);
+}
+
+// Load customer statistics
+document.addEventListener('DOMContentLoaded', function() {
+    // For now, set some sample values
+    // In a real application, you would fetch this data from the server
+    document.getElementById('monthCustomers').textContent = '{{ customers|length }}';
+    document.getElementById('topCustomer').textContent = '{{ customers[0].name if customers else "-" }}';
+});
+</script>
+{% endblock %} 

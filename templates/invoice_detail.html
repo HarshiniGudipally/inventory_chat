@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Invoice {{ invoice.invoice_number }} - SLN AUTOMOBILES{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Invoice {{ invoice.invoice_number }}</h1>
+            <div>
+                <button class="btn btn-outline-secondary" onclick="window.print()">Print Invoice</button>
+                <a href="/invoices" class="btn btn-outline-primary">Back to Invoices</a>
+            </div>
+        </div>
+        
+        <!-- Invoice Header -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>SLN AUTOMOBILES</h5>
+                        <p class="mb-1">123 Auto Parts Street</p>
+                        <p class="mb-1">City, State 12345</p>
+                        <p class="mb-1">Phone: (555) 123-4567</p>
+                        <p class="mb-0">Email: info@slnautomobiles.com</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <h5>Invoice Details</h5>
+                        <p class="mb-1"><strong>Invoice #:</strong> {{ invoice.invoice_number }}</p>
+                        <p class="mb-1"><strong>Date:</strong> {{ invoice.created_at.strftime('%Y-%m-%d') if invoice.created_at else 'N/A' }}</p>
+                        <p class="mb-1"><strong>Time:</strong> {{ invoice.created_at.strftime('%H:%M') if invoice.created_at else 'N/A' }}</p>
+                        <p class="mb-0"><strong>Status:</strong> 
+                            {% if invoice.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ invoice.status|title }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Customer Information -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Customer Information</h5>
+            </div>
+            <div class="card-body">
+                {% if customer %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Name:</strong> {{ customer.name }}</p>
+                        <p class="mb-1"><strong>Customer ID:</strong> {{ customer.customer_id }}</p>
+                        <p class="mb-1"><strong>Email:</strong> {{ customer.email }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Phone:</strong> {{ customer.phone }}</p>
+                        <p class="mb-0"><strong>Address:</strong> {{ customer.address }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">Walk-in Customer</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Invoice Items -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Items</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Part Number</th>
+                                <th>Description</th>
+                                <th>Brand</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if invoice["items"] %}
+                                {% for item in invoice["items"] %}
+                                <tr>
+                                    <td><strong>{{ item.part_number or 'N/A' }}</strong></td>
+                                    <td>{{ item.part_name or 'N/A' }}</td>
+                                    <td>{{ item.brand or 'N/A' }}</td>
+                                    <td>${{ "%.2f"|format(item.unit_price or 0) }}</td>
+                                    <td>{{ item.quantity or 0 }}</td>
+                                    <td class="text-end">${{ "%.2f"|format((item.quantity or 0) * (item.unit_price or 0)) }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No items found</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Invoice Summary -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Payment Information</h5>
+                        <p class="mb-1"><strong>Payment Method:</strong> {{ invoice.payment_method|title }}</p>
+                        {% if invoice.notes %}
+                        <p class="mb-0"><strong>Notes:</strong> {{ invoice.notes }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Subtotal:</strong></td>
+                                    <td class="text-end">${{ "%.2f"|format(invoice.subtotal or 0) }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tax ({{ "%.0f"|format((invoice.tax_rate or 0) * 100) }}%):</strong></td>
+                                    <td class="text-end">${{ "%.2f"|format(invoice.tax_amount or 0) }}</td>
+                                </tr>
+                                <tr class="table-active">
+                                    <td><strong>Total:</strong></td>
+                                    <td class="text-end"><strong>${{ "%.2f"|format(invoice.total or 0) }}</strong></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Thank You Message -->
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>Thank you for your business!</h5>
+                <p class="text-muted mb-0">For any questions or concerns, please contact us at (555) 123-4567</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .navbar, .btn, .d-flex {
+        display: none !important;
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .card-header {
+        background-color: #f8f9fa !important;
+        border-bottom: 1px solid #dee2e6 !important;
+    }
+    body {
+        margin: 0 !important;
+        padding: 20px !important;
+    }
+}
+</style>
+{% endblock %} 

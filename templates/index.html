@@ -17,6 +17,7 @@
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
+                        <th>Image</th>
                         <th>Part #</th>
                         <th>Name</th>
                         <th>Brand</th>
@@ -31,6 +32,26 @@
                 <tbody id="partsTable">
                     {% for part in parts %}
                     <tr>
+                        <td>
+                            {% if part.image_filename %}
+                                <div class="image-container position-relative">
+                                    <img src="/static/images/parts/{{ part.image_filename }}" 
+                                         alt="{{ part.part_name }}" 
+                                         class="img-thumbnail hover-preview" 
+                                         style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;"
+                                         data-bs-toggle="modal" 
+                                         data-bs-target="#imageModal{{ part._id }}"
+                                         data-image-src="/static/images/parts/{{ part.image_filename }}"
+                                         data-part-name="{{ part.part_name }}"
+                                         data-part-number="{{ part.part_number }}">
+                                </div>
+                            {% else %}
+                                <div class="bg-light text-muted d-flex align-items-center justify-content-center" 
+                                     style="width: 50px; height: 50px; font-size: 12px;">
+                                    No Image
+                                </div>
+                            {% endif %}
+                        </td>
                         <td><strong>{{ part.part_number }}</strong></td>
                         <td>{{ part.part_name }}</td>
                         <td>{{ part.brand }}</td>
@@ -58,4 +79,25 @@
         </div>
     </div>
 </div>
+
+<!-- Image Modals -->
+{% for part in parts %}
+{% if part.image_filename %}
+<div class="modal fade" id="imageModal{{ part._id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ part.part_name }} - {{ part.part_number }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="/static/images/parts/{{ part.image_filename }}" 
+                     alt="{{ part.part_name }}" 
+                     class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %} 

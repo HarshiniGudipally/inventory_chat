@@ -7,7 +7,7 @@
         
         <!-- Statistics Cards -->
         <div class="row mb-4">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card text-white bg-primary">
                     <div class="card-body">
                         <h5 class="card-title">Total Parts</h5>
@@ -15,27 +15,71 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card text-white bg-warning">
                     <div class="card-body">
-                        <h5 class="card-title">Low Stock Items</h5>
+                        <h5 class="card-title">Low Stock</h5>
                         <h2 class="card-text">{{ low_stock_parts }}</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card text-white bg-success">
                     <div class="card-body">
-                        <h5 class="card-title">Total Value</h5>
+                        <h5 class="card-title">Inventory Value</h5>
                         <h2 class="card-text">${{ "%.2f"|format(total_value) }}</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card text-white bg-info">
                     <div class="card-body">
-                        <h5 class="card-title">Categories</h5>
-                        <h2 class="card-text">{{ categories|length }}</h2>
+                        <h5 class="card-title">Today's Sales</h5>
+                        <h2 class="card-text" id="todaySales">$0.00</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card text-white bg-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">Today's Expenses</h5>
+                        <h2 class="card-text" id="todayExpenses">$0.00</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card text-white bg-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">Today's Profit</h5>
+                        <h2 class="card-text" id="todayProfit">$0.00</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sales & Expenses Overview -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">This Week's Sales</h5>
+                        <h2 class="card-text" id="weekSales">$0.00</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">This Week's Expenses</h5>
+                        <h2 class="card-text" id="weekExpenses">$0.00</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-dark">
+                    <div class="card-body">
+                        <h5 class="card-title">This Week's Profit</h5>
+                        <h2 class="card-text" id="weekProfit">$0.00</h2>
                     </div>
                 </div>
             </div>
@@ -122,7 +166,10 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex gap-2 flex-wrap">
+                            <a href="/sales" class="btn btn-success">Create Sale</a>
                             <a href="/add" class="btn btn-primary">Add New Part</a>
+                            <a href="/customers" class="btn btn-info">Manage Customers</a>
+                            <a href="/expenses" class="btn btn-warning">Add Expense</a>
                             <a href="/export" class="btn btn-outline-secondary">Export Inventory</a>
                             <a href="/chat" class="btn btn-outline-info">Ask AI Assistant</a>
                             <a href="/" class="btn btn-outline-dark">View All Inventory</a>
@@ -133,4 +180,29 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load dashboard statistics
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardStats();
+});
+
+function loadDashboardStats() {
+    fetch('/api/dashboard-stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('todaySales').textContent = '$' + data.today_sales.toFixed(2);
+            document.getElementById('todayExpenses').textContent = '$' + data.today_expenses.toFixed(2);
+            document.getElementById('todayProfit').textContent = '$' + data.today_profit.toFixed(2);
+            document.getElementById('weekSales').textContent = '$' + data.week_sales.toFixed(2);
+            document.getElementById('weekExpenses').textContent = '$' + data.week_expenses.toFixed(2);
+            document.getElementById('weekProfit').textContent = '$' + data.week_profit.toFixed(2);
+        })
+        .catch(error => {
+            console.error('Error loading dashboard stats:', error);
+        });
+}
+</script>
 {% endblock %} 

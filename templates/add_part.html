@@ -4,7 +4,7 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <h1 class="mb-4">Add New Auto Part</h1>
-        <form method="POST" class="card">
+        <form method="POST" class="card" enctype="multipart/form-data">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -80,6 +80,11 @@
                         <label for="warranty_period" class="form-label">Warranty Period (months)</label>
                         <input type="number" class="form-control" id="warranty_period" name="warranty_period" min="0">
                     </div>
+                </div>
+                <div class="mb-3">
+                    <label for="part_image" class="form-label">Part Image (Optional)</label>
+                    <input type="file" class="form-control" id="part_image" name="part_image" accept="image/*">
+                    <div class="form-text">Upload an image of the part (JPG, PNG, GIF) - Optional</div>
                 </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Add Part</button>

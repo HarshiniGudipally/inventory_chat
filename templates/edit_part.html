@@ -4,7 +4,7 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <h1 class="mb-4">Edit Auto Part</h1>
-        <form method="POST" class="card">
+        <form method="POST" class="card" enctype="multipart/form-data">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -83,6 +83,40 @@
                         <label for="warranty_period" class="form-label">Warranty Period (months)</label>
                         <input type="number" class="form-control" id="warranty_period" name="warranty_period" 
                                value="{{ part.warranty_period or '' }}" min="0">
+                    </div>
+                </div>
+                
+                <!-- Current Image Display -->
+                {% if part.image_filename %}
+                <div class="mb-3">
+                    <label class="form-label">Current Image</label>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="/static/images/parts/{{ part.image_filename }}" 
+                             alt="{{ part.part_name }}" 
+                             class="img-thumbnail hover-preview" 
+                             style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;"
+                             data-image-src="/static/images/parts/{{ part.image_filename }}"
+                             data-part-name="{{ part.part_name }}"
+                             data-part-number="{{ part.part_number }}">
+                        <div>
+                            <small class="text-muted">Current image: {{ part.image_filename }}</small>
+                            <br>
+                            <small class="text-muted">Hover to preview larger image</small>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- New Image Upload -->
+                <div class="mb-3">
+                    <label for="part_image" class="form-label">Update Image (Optional)</label>
+                    <input type="file" class="form-control" id="part_image" name="part_image" accept="image/*">
+                    <div class="form-text">
+                        {% if part.image_filename %}
+                            Leave empty to keep current image, or upload a new one to replace it.
+                        {% else %}
+                            Upload an image of the part (JPG, PNG, GIF)
+                        {% endif %}
                     </div>
                 </div>
                 <div class="d-flex gap-2">

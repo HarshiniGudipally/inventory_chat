@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Invoices - SLN AUTOMOBILES{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Invoices</h1>
+            <a href="/sales" class="btn btn-primary">Create New Sale</a>
+        </div>
+        
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Error Loading Invoices</h4>
+            <p>{{ error }}</p>
+            <hr>
+            <p class="mb-0">Please try refreshing the page or contact support if the problem persists.</p>
+        </div>
+        {% endif %}
+        
+        {% if invoices %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Payment Method</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td>
+                            <strong>{{ invoice.invoice_number }}</strong>
+                        </td>
+                        <td>
+                            {% if invoice.customer_name %}
+                                {{ invoice.customer_name }}
+                            {% else %}
+                                <span class="text-muted">Walk-in Customer</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ invoice["items"]|length }} items</span>
+                        </td>
+                        <td>
+                            <strong>${{ "%.2f"|format(invoice.total) }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ invoice.payment_method|title }}</span>
+                        </td>
+                        <td>
+                            {{ invoice.created_at.strftime('%Y-%m-%d %H:%M') }}
+                        </td>
+                        <td>
+                            {% if invoice.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif invoice.status == 'pending' %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ invoice.status|title }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/invoice/{{ invoice._id }}" class="btn btn-sm btn-outline-info">View</a>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="printInvoice('{{ invoice._id }}')">Print</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Summary Statistics -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Invoices</h5>
+                        <h2 class="card-text">{{ invoices|length }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Sales</h5>
+                        <h2 class="card-text">${{ "%.2f"|format(invoices|sum(attribute='total')) }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Today's Sales</h5>
+                        <h2 class="card-text" id="todaySales">$0.00</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">This Week</h5>
+                        <h2 class="card-text" id="weekSales">$0.00</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="text-center py-5">
+            <h3 class="text-muted">No invoices found</h3>
+            <p class="text-muted">Create your first sale to generate an invoice.</p>
+            <a href="/sales" class="btn btn-primary btn-lg">Create New Sale</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load dashboard statistics
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardStats();
+});
+
+function loadDashboardStats() {
+    fetch('/api/dashboard-stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('todaySales').textContent = '$' + data.today_sales.toFixed(2);
+            document.getElementById('weekSales').textContent = '$' + data.week_sales.toFixed(2);
+        })
+        .catch(error => {
+            console.error('Error loading dashboard stats:', error);
+        });
+}
+
+function printInvoice(invoiceId) {
+    // Open invoice in new window for printing
+    window.open(`/invoice/${invoiceId}?print=true`, '_blank');
+}
+</script>
+{% endblock %} 

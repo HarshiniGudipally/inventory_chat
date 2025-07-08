@@ -69,6 +69,18 @@ def check_env_file():
     print("✅ .env file found")
     return True
 
+def create_directories():
+    """Create necessary directories"""
+    directories = [
+        'static/images/parts',
+        'static/images/customers'
+    ]
+    
+    for directory in directories:
+        Path(directory).mkdir(parents=True, exist_ok=True)
+    
+    print("✅ Directories created/verified")
+
 def check_mongodb():
     """Check if MongoDB is accessible"""
     try:
@@ -115,6 +127,9 @@ def main():
     if not check_mongodb():
         print("\n💡 Start MongoDB and run this script again")
         sys.exit(1)
+    
+    # Create necessary directories
+    create_directories()
     
     print("\n🚀 Starting the application...")
     print("📱 Open your browser and go to: http://localhost:8000")

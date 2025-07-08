@@ -1,31 +1,67 @@
-# SLN AUTOMOBILES Inventory Management System
+# SLN AUTOMOBILES - Auto Parts Inventory Management System
 
-A comprehensive inventory management system for automobile spare parts shops with AI-powered multilingual voice assistant support.
+A comprehensive inventory management system for automotive spare parts shop built with FastAPI, MongoDB, and OpenAI integration.
 
 ## Features
 
-- **Inventory Management**: Add, edit, delete, and track auto parts
-- **AI Assistant**: Multilingual voice-enabled chat assistant (Telugu, Hindi, English)
-- **Dashboard**: Real-time analytics and low stock alerts
-- **Search & Filter**: Quick search through inventory
-- **Export**: CSV export functionality
-- **Responsive Design**: Mobile-friendly interface
+### Core Inventory Management
+- ✅ Add, edit, delete auto parts
+- ✅ Search and filter inventory
+- ✅ Stock level monitoring with alerts
+- ✅ CSV export functionality
+- ✅ **Image upload support for parts (optional)**
+- ✅ **Hover preview for part images**
 
-## Tech Stack
+### Sales & Invoice Management
+- ✅ Create sales by scanning barcodes or entering part numbers
+- ✅ Automatic inventory updates on sales
+- ✅ Invoice generation with tax calculation
+- ✅ Invoice management and viewing
+- ✅ Dynamic pricing based on customer type (Regular, VIP, Wholesale)
 
-- **Backend**: FastAPI (Python)
-- **Database**: MongoDB
-- **Frontend**: HTML, CSS, JavaScript, Bootstrap 5
-- **AI**: OpenAI GPT-3.5-turbo
-- **Authentication**: JWT tokens
-- **Voice**: Web Speech API
+### Expense Management
+- ✅ Add and track expenses
+- ✅ Categorize expenses
+- ✅ Filter expenses by date range
+- ✅ Daily/weekly/monthly expense tracking
 
-## Installation
+### Customer Management
+- ✅ Add and manage customers
+- ✅ Customer information storage
+
+### AI Assistant
+- ✅ OpenAI-powered chat assistant
+- ✅ Voice input and output support
+- ✅ Persistent chat sessions
+- ✅ Chat history export
+- ✅ Multi-language support
+
+### User Management
+- ✅ Role-based access control (Admin/Worker)
+- ✅ Secure authentication
+- ✅ Session management
+
+### Dashboard & Analytics
+- ✅ Real-time inventory statistics
+- ✅ Sales and expense analytics
+- ✅ Profit tracking
+- ✅ Low stock alerts
+
+## Image Storage
+
+**Images are stored in:** `static/images/parts/` directory
+- File naming: `{part_number}_{timestamp}.{extension}`
+- Supported formats: JPG, PNG, GIF
+- Images are optional - parts can be added without images
+- Hover over images in the inventory list to see larger previews
+- Click images to open full-size modal view
+
+## Installation & Setup
 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd agentic_ai
+   cd inventory_chat
    ```
 
 2. **Install dependencies**
@@ -33,172 +69,150 @@ A comprehensive inventory management system for automobile spare parts shops wit
    pip install -r requirements.txt
    ```
 
-3. **Set up environment variables**
+3. **Fix bcrypt issues (if needed)**
+   If you encounter bcrypt version compatibility issues, run:
    ```bash
-   # Copy the example environment file
-   copy env_example.txt .env
-   
-   # Edit .env with your actual values
-   # Required:
-   # - MONGO_URI (default: mongodb://localhost:27017)
-   # - SECRET_KEY (generate a secure key)
-   # - OPENAI_API_KEY (get from OpenAI)
+   python fix_dependencies.py
    ```
 
-4. **Start MongoDB**
+4. **Set up environment variables**
+   - Copy `env_example.txt` to `.env`
+   - Edit `.env` with your actual values:
+     - `MONGO_URI`: MongoDB connection string
+     - `SECRET_KEY`: Secure random key for JWT
+     - `OPENAI_API_KEY`: Your OpenAI API key
+
+5. **Start MongoDB**
+   - Ensure MongoDB is running on localhost:27017
+
+6. **Run the application**
    ```bash
-   # Make sure MongoDB is running on localhost:27017
-   # Or update MONGO_URI in .env to point to your MongoDB instance
+   python start.py
    ```
 
-5. **Run the application**
-   ```bash
-   python main.py
-   ```
+7. **Access the application**
+   - Main application: http://localhost:8000
+   - Dashboard: http://localhost:8000/dashboard
 
-6. **Access the application**
-   - Open your browser and go to `http://localhost:8000`
-   - The application will automatically create sample data on first run
+## Default Users
 
-## Environment Variables
+### Admin User
+- Username: `admin`
+- Password: `admin123`
+- Full access to all features
 
-Create a `.env` file in the root directory with the following variables:
-
-```env
-# MongoDB Configuration
-MONGO_URI=mongodb://localhost:27017
-
-# Security
-SECRET_KEY=your-super-secret-key-change-this-in-production
-
-# OpenAI Configuration
-OPENAI_API_KEY=your-openai-api-key-here
-
-# Email Configuration (optional)
-SMTP_SERVER=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
-```
+### Worker User
+- Username: `worker`
+- Password: `worker123`
+- Limited access (no user management, no expense deletion)
 
 ## Usage
 
-### Inventory Management
-- **View Inventory**: See all parts with stock levels and pricing
-- **Add Parts**: Use the "Add New Part" button to add inventory items
-- **Edit Parts**: Click "Edit" on any part to modify details
-- **Delete Parts**: Click "Delete" to remove items from inventory
-- **Search**: Use the search bar to find specific parts
+### Adding Parts
+1. Click "Add New Part" from the main page
+2. Fill in required information
+3. **Optionally upload an image** (JPG, PNG, GIF)
+4. Click "Add Part"
+
+### Editing Parts
+1. Click "Edit" on any part in the inventory
+2. Modify the information as needed
+3. **Optionally update the image** - leave empty to keep current image
+4. Click "Update Part"
+
+### Image Features
+- **Hover Preview**: Hover over any part image to see a larger preview
+- **Modal View**: Click on any image to open full-size view
+- **Optional Upload**: Images are completely optional for all parts
+- **Easy Replacement**: When editing, you can replace images or keep existing ones
+
+### Sales Process
+1. Go to Sales page
+2. Scan barcode or enter part number
+3. Select customer type for pricing
+4. Enter quantity
+5. Complete sale (automatically updates inventory)
 
 ### AI Assistant
-- **Multilingual Support**: Choose between Telugu, Hindi, and English
-- **Voice Input**: Click the microphone button to speak your questions
-- **Voice Output**: AI responses are automatically spoken back
-- **Example Questions**: Use the provided example buttons for quick queries
+1. Go to Chat page
+2. Ask questions about inventory, parts, or get recommendations
+3. Use voice input/output for hands-free operation
+4. Export chat history when needed
 
-### Dashboard
-- **Statistics**: View total parts, low stock items, and inventory value
-- **Category Distribution**: See how parts are distributed across categories
-- **Low Stock Alerts**: Get notified of items that need restocking
-- **Quick Actions**: Access common functions from the dashboard
+## File Structure
 
-### Export
-- **CSV Export**: Download your complete inventory as a CSV file
-- **Data Backup**: Use exports for backup and analysis
+```
+inventory_chat/
+├── main.py                 # Main FastAPI application
+├── start.py               # Startup script with dependency checks
+├── requirements.txt       # Python dependencies
+├── .env                   # Environment variables (create from env_example.txt)
+├── static/
+│   ├── images/
+│   │   └── parts/         # Part images storage
+│   ├── style.css          # Stylesheets
+│   └── script.js          # JavaScript functionality
+├── templates/             # HTML templates
+│   ├── base.html          # Base template
+│   ├── index.html         # Inventory listing
+│   ├── add_part.html      # Add part form
+│   ├── edit_part.html     # Edit part form
+│   ├── sales.html         # Sales page
+│   ├── chat.html          # AI chat interface
+│   └── ...                # Other templates
+└── README.md              # This file
+```
 
 ## API Endpoints
 
+### Inventory Management
 - `GET /` - Main inventory page
-- `GET /add` - Add new part form
-- `POST /add` - Create new part
-- `GET /edit/{id}` - Edit part form
-- `POST /edit/{id}` - Update part
-- `GET /delete/{id}` - Delete part
-- `GET /dashboard` - Analytics dashboard
-- `GET /chat` - AI assistant interface
-- `POST /api/chat` - AI chat API
-- `GET /api/search` - Search parts API
-- `GET /export` - Export inventory as CSV
+- `GET /add` - Add part form
+- `POST /add` - Add new part
+- `GET /edit/{part_id}` - Edit part form
+- `POST /edit/{part_id}` - Update part
+- `GET /delete/{part_id}` - Delete part
+- `GET /export` - Export inventory to CSV
 
-## Sample Data
+### Sales & Invoices
+- `GET /sales` - Sales page
+- `POST /api/create-sale` - Create new sale
+- `GET /invoices` - List invoices
+- `GET /invoice/{invoice_id}` - View invoice
 
-The application comes with sample auto parts data including:
-- Oil filters (Bosch)
-- Spark plugs (NGK)
-- Various categories and suppliers
+### Expenses
+- `GET /expenses` - Expenses page
+- `POST /expenses/add` - Add expense
+- `GET /expenses/delete/{expense_id}` - Delete expense
 
-## Troubleshooting
+### AI Assistant
+- `GET /chat` - Chat interface
+- `POST /api/chat` - Chat API
+- `GET /api/export-chat/{session_id}` - Export chat
 
-### Common Issues
+### Authentication
+- `GET /login` - Login page
+- `POST /login` - Login
+- `GET /logout` - Logout
 
-1. **MongoDB Connection Error**
-   - Ensure MongoDB is running on localhost:27017
-   - Check your MONGO_URI in .env file
-   - Verify MongoDB service is started
+## Technologies Used
 
-2. **OpenAI API Errors**
-   - Verify your OPENAI_API_KEY is correct
-   - Check your OpenAI account has sufficient credits
-   - Ensure the API key has proper permissions
+- **Backend**: FastAPI, Python 3.8+
+- **Database**: MongoDB with Motor (async driver)
+- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
+- **AI**: OpenAI GPT API
+- **Authentication**: JWT tokens
+- **File Upload**: FastAPI File uploads
+- **Voice**: Web Speech API
 
-3. **Static Files Not Loading**
-   - Check that the static/ directory exists
-   - Verify file permissions
-   - Clear browser cache
+## Contributing
 
-4. **Port Already in Use**
-   - Change the port in main.py (line 340)
-   - Kill existing processes using the port
-   - Use a different port number
-
-### Error Logs
-- Check the terminal/console for error messages
-- Look for specific error codes and messages
-- Verify all environment variables are set correctly
-
-## Development
-
-### Project Structure
-```
-agentic_ai/
-├── main.py              # Main FastAPI application
-├── requirements.txt     # Python dependencies
-├── env_example.txt      # Environment variables template
-├── templates/           # HTML templates
-│   ├── base.html
-│   ├── index.html
-│   ├── add_part.html
-│   ├── edit_part.html
-│   ├── dashboard.html
-│   └── chat.html
-├── static/              # Static files
-│   ├── style.css
-│   └── script.js
-└── README.md
-```
-
-### Adding New Features
-1. Create new routes in `main.py`
-2. Add corresponding templates in `templates/`
-3. Update static files as needed
-4. Test thoroughly before deployment
-
-## Security Considerations
-
-- Change the default SECRET_KEY in production
-- Use HTTPS in production environments
-- Implement proper user authentication
-- Validate all user inputs
-- Use environment variables for sensitive data
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## License
 
-This project is open source and available under the MIT License.
-
-## Support
-
-For issues and questions:
-1. Check the troubleshooting section
-2. Review error logs
-3. Verify all dependencies are installed
-4. Ensure MongoDB and environment variables are configured correctly 
+This project is licensed under the MIT License. 
